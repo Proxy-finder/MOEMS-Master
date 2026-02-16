@@ -1,23 +1,20 @@
-import path from 'path';
-import { defineConfig, loadEnv } from 'vite';
+
+import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig(({ mode }) => {
-    const env = loadEnv(mode, '.', '');
-    return {
-      server: {
-        port: 3000,
-        host: '0.0.0.0',
-      },
-      plugins: [react()],
-      define: {
-        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
-      },
-      resolve: {
-        alias: {
-          '@': path.resolve(__dirname, '.'),
-        }
-      }
-    };
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    port: 3000,
+  },
+  preview: {
+    // Render provides a $PORT environment variable
+    port: parseInt(process.env.PORT || '4173'),
+    strictPort: true,
+    // Allow Render domains to access the preview server
+    allowedHosts: ['moems-master.onrender.com', '.onrender.com']
+  },
+  build: {
+    outDir: 'dist',
+  }
 });
